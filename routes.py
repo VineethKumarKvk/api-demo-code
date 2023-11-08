@@ -1,7 +1,10 @@
 from app import app
 from flask import jsonify,request,make_response
+#add this models import
 from models import *
-import base64,jwt
+#add this import base64
+import base64
+import jwt
 from werkzeug.security import generate_password_hash,check_password_hash
 from sqlalchemy.orm import sessionmaker
 from functools import wraps
@@ -27,7 +30,7 @@ def token_required(f):
 
 """Exam end points starts from here"""
 
-@app.route('/login',methods=['POST'])
+@app.route('/api/public/login',methods=['GET'])
 def login():
     auth_header = request.headers.get('Authorization')
     print(auth_header)
@@ -40,7 +43,7 @@ def login():
             if(user):
                 if check_password_hash(user.password,password):
                     tokens = jwt.encode({'id':user.user_id},app.config['SECRET_KEY'])
-                    return make_response(tokens),200
+                    return jsonify(token=tokens),200
                 else:
                     return '',401
             else:    
